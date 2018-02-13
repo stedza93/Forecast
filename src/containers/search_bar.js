@@ -1,19 +1,27 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { fetchWeather } from "../actions/index.js";
 
-export default class SearchBar extends Component {
+class SearchBar extends Component {
   constructor(props) {
     super(props);
     this.state = { term: "" };
-    this.onInputChange = this.onInputChange.bind(this); //??
+    this.onInputChange = this.onInputChange.bind(this);
+    this.onFormSubmit = this.onFormSubmit.bind(this);
   }
-  onInputChange(event) {
+  onInputChange = event => {
     this.setState({ term: event.target.value });
+    //console.log(event);
+    //this.setState(prevState => ({ term: event.target.value }));
     //console.log(event.target.value);
-  }
+  };
 
-  onFormSubmit(event) {
+  onFormSubmit = event => {
     event.preventDefault();
-  }
+    this.props.fetchWeather(this.state.term);
+    this.setState({ term: " " });
+  };
 
   render() {
     return (
@@ -34,3 +42,9 @@ export default class SearchBar extends Component {
     );
   }
 }
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchWeather }, dispatch);
+}
+export default connect(null, mapDispatchToProps)(SearchBar);
+
+//export default connect(null, { fetchWeather })(SearchBar); -moglo je i ovako samo bez fje mapdispatch ako se ne prenosi stanje
